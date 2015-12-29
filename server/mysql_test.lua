@@ -1,5 +1,4 @@
 class "MySQLTest"
-local devmode = false
 function MySQLTest:__init()
 	self.vehicles               = {}
 	self.vid					= {}
@@ -81,7 +80,6 @@ function MySQLTest:SetUpSql()
 		self.vlocked[tonumber(row[1])] = row[13]
 		self.sellable[tonumber(row[1])] = row[14]
 		self.prize[tonumber(row[1])] = row[15]
-		print (self.vid[1])
 		row = result:fetch({})
 	end
 	return true
@@ -140,16 +138,13 @@ function MySQLTest:PlayerChat( args )
 	local veh = args.player:GetVehicle()
 	
 	if msg == "/buyvehicle" then
-		if (devmode==true)then
-			args.player:SendChatMessage("In Development!", Color(255,0,0) )
-		return end
 		if (args.player:InVehicle()==false)then
-			args.player:SendChatMessage("You do not in car!", Color(255,0,0) )
+			args.player:SendChatMessage("You are not in any vehicle!", Color(255,0,0) )
 		return end
 		for k,v in pairs(self.vid) do
 			if (veh:GetId() == self.vid[k]) then
 				if (self.vowner[k] == tostring(args.player:GetSteamId().id)) then
-					args.player:SendChatMessage("* You are the owner already!", Color(255,0,0) )
+					args.player:SendChatMessage("* You are already the vehicle's owner!", Color(255,0,0) )
 					return
 				end
 				if (self.sellable[k] == tostring(1)) then
@@ -173,11 +168,8 @@ function MySQLTest:PlayerChat( args )
 		end
 	end
     if msg == "/lock" then
-		if (devmode==true)then
-			args.player:SendChatMessage("In Development!", Color(255,0,0) )
-		return end
 		if (args.player:InVehicle()==false)then
-			args.player:SendChatMessage("You do not in car!", Color(255,0,0) )
+			args.player:SendChatMessage("You are not in any vehicle!", Color(255,0,0) )
 		return end
 		for k,v in pairs(self.vid) do
 			if (veh:GetId() == self.vid[k])
@@ -208,11 +200,8 @@ function MySQLTest:PlayerChat( args )
 	end
 	
 	if msg == "/park" then
-		if (devmode==true)then
-			args.player:SendChatMessage("In Development!", Color(255,0,0) )
-		return end
 		if (args.player:InVehicle()==false)then
-			args.player:SendChatMessage("You do not in car!", Color(255,0,0) )
+			args.player:SendChatMessage("You are not in any vehicle!", Color(255,0,0) )
 		return end
 		for k,v in pairs(self.vid) do
 			if (veh:GetId() == self.vid[k])
