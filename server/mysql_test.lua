@@ -116,7 +116,7 @@ function MySQLTest:EnterVehicle(args)
 	for k,v in pairs(self.vid) do
 		if (args.vehicle:GetId() == self.vid[k])
 		then
-			local locked;
+			local locked
 			if (tonumber(self.vlocked[k]) == 1) then
 				locked = "Yes"
 			else
@@ -171,8 +171,8 @@ function MySQLTest:PlayerChat( args )
 				local ang = veh:GetAngle() --ang.x ang.y ang.z ang.w
 				local template = veh:GetTemplate()
 				local decal = veh:GetDecal()
-				local price = tonumber(cmdargs[2]);
-				local query = "INSERT INTO `jc2mp`.`jc2mp_vehicle` (`ID`, `model`, `pos1`, `pos2`, `pos3`, `ang1`, `ang2`, `ang3`, `ang4`, `template`, `decal`, `owner`, `locked`, `sellable`, `prize`) VALUES (NULL, '" .. model .. "', '" .. pos.x .. "', '" .. pos.y .. "', '" .. pos.z.. "', '" .. ang.x .. "', '" .. ang.y .. "', '" .. ang.z .. "', '" .. ang.w .. "', '" .. template .. "', '" .. decal .. "', 'THE STATE', '0', '1', '" .. price .. "')";
+				local price = tonumber(cmdargs[2])
+				local query = "INSERT INTO `jc2mp`.`jc2mp_vehicle` (`ID`, `model`, `pos1`, `pos2`, `pos3`, `ang1`, `ang2`, `ang3`, `ang4`, `template`, `decal`, `owner`, `locked`, `sellable`, `prize`) VALUES (NULL, '" .. model .. "', '" .. pos.x .. "', '" .. pos.y .. "', '" .. pos.z.. "', '" .. ang.x .. "', '" .. ang.y .. "', '" .. ang.z .. "', '" .. ang.w .. "', '" .. template .. "', '" .. decal .. "', 'THE STATE', '0', '1', '" .. price .. "')"
 				local result = self.sqlConnection:execute(query)
 				if result == nil then
 					args.player:SendChatMessage("System Error! Please contact admin!", Color(255,0,0) )
@@ -261,7 +261,7 @@ function MySQLTest:PlayerChat( args )
 					local pos = veh:GetPosition()
 					local ang = veh:GetAngle()
 					local query = "UPDATE `jc2mp_vehicle` SET  `pos1` =  '" .. pos.x .. "',`pos2` =  '" .. pos.y .. "',`pos3` =  '" .. pos.z .. "',`ang1` =  '" .. ang.x .. "',`ang2` =  '" .. ang.y .. "',`ang3` =  '" .. ang.z .. "',`ang4` =  '" .. ang.w .. "' WHERE  `jc2mp_vehicle`.`ID` =" .. k
-					veh:SetSpawnPosition(pos);
+					veh:SetSpawnPosition(pos)
 					local result = self.sqlConnection:execute(query)
 					if result == nil then
 						args.player:SendChatMessage("System Error! Please contact admin!", Color(255,0,0) )
