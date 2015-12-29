@@ -1,5 +1,7 @@
 class "MySQLTest"
 function MySQLTest:__init()
+	self.admins = {}
+	self:AddAdmin("STEAM_0:1:55058712") -- CHANGE ME TO YOUR STEAM ID!
 	self.vehicles               = {}
 	self.vid					= {}
 	self.vowner					= {}
@@ -32,6 +34,14 @@ function MySQLTest:__init()
 	Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 	Events:Subscribe("PlayerEnterVehicle", self, self.EnterVehicle)
 	Events:Subscribe( "PlayerChat", self, self.PlayerChat )
+end
+
+function MySQLTest:AddAdmin(steamId)
+	self.admins[steamId] = true
+end
+
+function MySQLTest:IsAdmin(player)
+	return self.admins[player:GetSteamId().string] ~= nil
 end
 
 function MySQLTest:SetUpSql()
@@ -136,6 +146,45 @@ end
 function MySQLTest:PlayerChat( args )
     local msg = args.text
 	local veh = args.player:GetVehicle()
+
+    if ( msg:sub(1, 1) ~= "/" ) then
+        return true
+    end    
+    
+    local cmdargs = {}
+    for word in string.gmatch(msg, "[^%s]+") do
+        table.insert(cmdargs, word)
+    end
+	
+    if (cmdargs[1] == "/addvehicle") then
+		if self:IsAdmin(args.player) then
+			if (args.player:InVehicle()==false)then
+				args.player:SendChatMessage("You are not in any vehicle!", Color(255,0,0) )
+			return end
+			if( cmdargs[2] == nil) then
+				args.player:SendChatMessage("USAGE: /addvehicle [Price]", Color(255,0,0) )
+				return	
+			end
+			else
+				local model = veh:GetModelId()
+				local pos = veh:GetPosition() --pos.x pos.y pos.z
+				local ang = veh:GetAngle() --ang.x ang.y ang.z ang.w
+				local template = veh:GetTemplate()
+				local decal = veh:GetDecal()
+				local price = tonumber(cmdargs[2]);
+				local query = "INSERT INTO `jc2mp`.`jc2mp_vehicle` (`ID`, `model`, `pos1`, `pos2`, `pos3`, `ang1`, `ang2`, `ang3`, `ang4`, `template`, `decal`, `owner`, `locked`, `sellable`, `prize`) VALUES (NULL, '" .. model .. "', '" .. pos.x .. "', '" .. pos.y .. "', '" .. pos.z.. "', '" .. ang.x .. "', '" .. ang.y .. "', '" .. ang.z .. "', '" .. ang.w .. "', '" .. template .. "', '" .. decal .. "', 'THE STATE', '0', '1', '" .. price .. "')";
+				local result = self.sqlConnection:execute(query)
+				if result == nil then
+					args.player:SendChatMessage("System Error! Please contact admin!", Color(255,0,0) )
+					return
+				end	
+				args.player:SendChatMessage("Vehicle added!", Color(0,255,0) )
+			end
+		else
+			args.player:SendChatMessage("You do not have the permission to do access command!", Color(255,0,0) )
+			return
+		end
+    end
 	
 	if msg == "/buyvehicle" then
 		if (args.player:InVehicle()==false)then
@@ -212,13 +261,13 @@ function MySQLTest:PlayerChat( args )
 					local pos = veh:GetPosition()
 					local ang = veh:GetAngle()
 					local query = "UPDATE `jc2mp_vehicle` SET  `pos1` =  '" .. pos.x .. "',`pos2` =  '" .. pos.y .. "',`pos3` =  '" .. pos.z .. "',`ang1` =  '" .. ang.x .. "',`ang2` =  '" .. ang.y .. "',`ang3` =  '" .. ang.z .. "',`ang4` =  '" .. ang.w .. "' WHERE  `jc2mp_vehicle`.`ID` =" .. k
-					
+					veh:SetSpawnPosition(pos);
 					local result = self.sqlConnection:execute(query)
 					if result == nil then
 						args.player:SendChatMessage("System Error! Please contact admin!", Color(255,0,0) )
 						return
 					end
-					args.player:SendChatMessage("Vehicle has been parked, it will be aliveable when the database refresh!", Color(0,255,0) )
+					args.player:SendChatMessage("Vehicle has been parked!", Color(0,255,0) )
 				end
 			end
 		end
