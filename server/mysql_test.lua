@@ -163,8 +163,7 @@ function MySQLTest:PlayerChat( args )
 			return end
 			if( cmdargs[2] == nil) then
 				args.player:SendChatMessage("USAGE: /addvehicle [Price]", Color(255,0,0) )
-				return	
-			end
+				return
 			else
 				local model = veh:GetModelId()
 				local pos = veh:GetPosition() --pos.x pos.y pos.z
