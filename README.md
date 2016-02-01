@@ -1,5 +1,7 @@
 # JC2-MP Vehicle Ownership System
 
+[![Join the chat at https://gitter.im/hcyxsq/jc2mp-vehicleownership](https://badges.gitter.im/hcyxsq/jc2mp-vehicleownership.svg)](https://gitter.im/hcyxsq/jc2mp-vehicleownership?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Installation
 
 * Fistly make sure you have mysql installed.
